@@ -1,0 +1,43 @@
+<?php
+$con = mysqli_connect("localhost", "root", "", "upload_image");
+
+if ($con) {
+    if (!empty($_POST['image']) && !empty($_POST['predict']) && !empty($_POST['conf_level'])) {
+        $path = 'images/' . date("d-m-Y") . '-' . time() . '-' . rand(10000, 100000) . '.jpg';
+        if (file_put_contents($path, base64_decode($_POST['image']))) {
+            $predict = $_POST['predict'];
+            $conf_level = $_POST['conf_level'];
+            $sql = "INSERT INTO images (path, predict, conf_level) VALUES ('$path', '$predict', '$conf_level')";
+            if (mysqli_query($con, $sql)) {
+                echo "success";
+            } else {
+                echo 'Failed to insert into Database';
+            }
+        } else {
+            echo 'Failed to upload image';
+        }
+    } else {
+        echo 'No image, prediction, or confidence found';
+    }
+} else {
+    echo "Database connection failed";
+}
+?>
+
+<?php
+$con = mysqli_connect(hostname:"localhost", username:"", database:"upload_image");
+if($con){
+    if(!empty($_POST['image'])){
+        $path = 'images/'.date("d-m-Y").'-'.time().'-'.rand(10000, 100000)  .  '.jpg';
+        if(file_put_contents($path,
+            base64_decode($_POST['image']))){
+            $sql = "insert into images (path) values (".$path.")";
+            if(mysqli_query($con, $sql)){
+                echo "success";
+            }
+            else echo 'Failed to insert to Database';
+        }else echo 'Failed to upload image';
+    }else echo 'No image found';
+}
+else echo "Database connection failed";
+?>
